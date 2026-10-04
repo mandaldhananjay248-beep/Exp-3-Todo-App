@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow</title>
+    <meta name="description" content="Modern to-do dashboard for planning and tracking tasks." />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-theme="dark">
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="app-name">TaskFlow</p>
+          <p class="app-tagline">Plan it. Do it. Complete it.</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle color theme">
+            Light mode
+          </button>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="hero panel">
+          <div class="hero-copy">
+            <p id="currentDate" class="date-text">Date</p>
+            <h1 id="greeting">Good evening, Dhananjay</h1>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span class="summary-label">Total</span>
+              <strong id="totalSummary">0</strong>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Completed</span>
+              <strong id="completedSummary">0</strong>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Pending</span>
+              <strong id="pendingSummary">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="stats panel">
+          <div class="stats-header">
+            <div>
+              <p class="section-label">Progress</p>
+              <h2>Productivity overview</h2>
+            </div>
+            <div class="progress-value">
+              <span id="completionRate">0%</span>
+            </div>
+          </div>
+
+          <div class="progress-bar" aria-label="Task completion progress">
+            <span id="progressFill" class="progress-fill"></span>
+          </div>
+
+          <div class="counter-grid">
+            <div class="counter-card">
+              <span class="counter-label">Total</span>
+              <strong id="totalCounter">0</strong>
+            </div>
+            <div class="counter-card">
+              <span class="counter-label">Active</span>
+              <strong id="activeCounter">0</strong>
+            </div>
+            <div class="counter-card">
+              <span class="counter-label">Completed</span>
+              <strong id="completedCounter">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel form-panel">
+          <div class="section-header compact">
+            <div>
+              <p class="section-label">New task</p>
+              <h2>Create a task</h2>
+            </div>
+          </div>
+
+          <form id="taskForm" class="task-form" novalidate>
+            <div class="field-group field-title">
+              <label for="taskTitle">Task title</label>
+              <input id="taskTitle" name="taskTitle" type="text" maxlength="120" placeholder="Plan assignment revision" required />
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="taskPriority">Priority</label>
+                <select id="taskPriority" name="taskPriority">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="taskCategory">Category</label>
+                <select id="taskCategory" name="taskCategory">
+                  <option value="personal" selected>Personal</option>
+                  <option value="study">Study</option>
+                  <option value="work">Work</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="taskDueDate">Due date</label>
+              <input id="taskDueDate" name="taskDueDate" type="date" />
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn" id="addTaskButton" type="submit">Add task</button>
+            </div>
+
+            <p id="validationMessage" class="validation-message" hidden aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="panel list-panel">
+          <div class="list-controls">
+            <div class="search-box">
+              <label class="sr-only" for="searchInput">Search tasks</label>
+              <input id="searchInput" type="search" placeholder="Search tasks..." aria-label="Search tasks" />
+            </div>
+
+            <div class="toolbar-group">
+              <label for="sortSelect" class="sort-label">Sort</label>
+              <select id="sortSelect" aria-label="Sort tasks">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="priority">Priority</option>
+                <option value="dueDate">Due date</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-row">
+              <span class="filter-title">Status</span>
+              <div class="chip-group" role="tablist" aria-label="Filter by status">
+                <button class="chip status-filter is-active" type="button" data-filter="all">All</button>
+                <button class="chip status-filter" type="button" data-filter="active">Active</button>
+                <button class="chip status-filter" type="button" data-filter="completed">Completed</button>
+              </div>
+            </div>
+
+            <div class="filter-row">
+              <span class="filter-title">Category</span>
+              <div class="chip-group" role="tablist" aria-label="Filter by category">
+                <button class="chip category-filter is-active" type="button" data-category="all">All</button>
+                <button class="chip category-filter" type="button" data-category="personal">Personal</button>
+                <button class="chip category-filter" type="button" data-category="study">Study</button>
+                <button class="chip category-filter" type="button" data-category="work">Work</button>
+                <button class="chip category-filter" type="button" data-category="other">Other</button>
+              </div>
+            </div>
+
+            <div class="filter-row compact-row">
+              <span class="filter-title">Priority</span>
+              <select id="priorityFilter" aria-label="Filter by priority">
+                <option value="all">All</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button id="clearCompletedBtn" class="secondary-btn" type="button">Clear completed</button>
+          </div>
+
+          <div id="taskList" class="task-list" aria-live="polite"></div>
+
+          <div id="emptyState" class="empty-state" hidden>
+            <div class="empty-icon">✓</div>
+            <h3>You are all caught up!</h3>
+            <p>Add a task and start making progress.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="editModal" class="modal" aria-hidden="true">
+      <div class="modal-backdrop" data-close="edit"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-header">
+          <h3 id="editModalTitle">Edit task</h3>
+        </div>
+
+        <form id="editTaskForm" class="modal-form">
+          <div class="field-group">
+            <label for="editTaskTitle">Task title</label>
+            <input id="editTaskTitle" type="text" maxlength="120" required />
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="editTaskPriority">Priority</label>
+              <select id="editTaskPriority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label for="editTaskCategory">Category</label>
+              <select id="editTaskCategory">
+                <option value="personal">Personal</option>
+                <option value="study">Study</option>
+                <option value="work">Work</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="editTaskDueDate">Due date</label>
+            <input id="editTaskDueDate" type="date" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="cancelEditBtn" class="secondary-btn">Cancel</button>
+            <button type="submit" class="primary-btn">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="deleteModal" class="modal" aria-hidden="true">
+      <div class="modal-backdrop" data-close="delete"></div>
+      <div class="modal-card confirm-card" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="modal-header">
+          <h3 id="deleteModalTitle">Delete task?</h3>
+        </div>
+
+        <p class="confirm-text">This action cannot be undone. Are you sure you want to delete this task?</p>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelDeleteBtn" class="secondary-btn">Cancel</button>
+          <button type="button" id="deleteConfirmBtn" class="danger-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
